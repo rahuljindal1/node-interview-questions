@@ -2,21 +2,26 @@
 
 ## Table of Contents
 
-1. [What are Event Emitters](#what-are-event-emitters)
-2. [How to pass data with event emitters in Node.js](#how-to-pass-data-with-event-emitters-in-nodejs)
-3. [How to handle errors with event emitters in Node.js](#how-to-handle-errors-with-event-emitters-in-nodejs)
-4. [What is the role of error events in EventEmitter](#what-is-the-role-of-error-events-in-eventemitter)
-5. [How to handle multiple event listeners in Node.js](#how-to-handle-multiple-event-listeners-in-nodejs)
-6. [How to remove event listeners in Node.js](#how-to-remove-event-listeners-in-nodejs)
-7. [What is the difference between `removeListener` and `removeAllListeners` in event emitters](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters)
-8. [What is the difference between `on` and `once` methods in event emitters](#what-is-the-difference-between-on-and-once-methods-in-event-emitters)
-9. [How can you implement custom event emitters in Node.js](#how-can-you-implement-custom-event-emitters-in-nodejs)
-10. [What are the core features of EventEmitter](#what-are-the-core-features-of-eventemitter)
-11. [Explain the concept of event propagation in event emitters](#explain-the-concept-of-event-propagation-in-event-emitters)
-12. [An example of using EventEmitter in a real-world scenario](#an-example-of-using-eventemitter-in-a-real-world-scenario)
-13. [What kind of applications can be created using event system](#what-kind-of-applications-can-be-created-using-event-system)
-14. [What are memory leaks in event emitters and how to prevent them](#what-are-memory-leaks-in-event-emitters-and-how-to-prevent-them)
-15. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
+1. Event-Emitters
+   1. [What are Event Emitters](#what-are-event-emitters)
+   2. [How to pass data with event emitters in Node.js](#how-to-pass-data-with-event-emitters-in-nodejs)
+   3. [How to handle errors with event emitters in Node.js](#how-to-handle-errors-with-event-emitters-in-nodejs)
+   4. [What is the role of error events in EventEmitter](#what-is-the-role-of-error-events-in-eventemitter)
+   5. [How to handle multiple event listeners in Node.js](#how-to-handle-multiple-event-listeners-in-nodejs)
+   6. [How to remove event listeners in Node.js](#how-to-remove-event-listeners-in-nodejs)
+   7. [What is the difference between `removeListener` and `removeAllListeners` in event emitters](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters)
+   8. [What is the difference between `on` and `once` methods in event emitters](#what-is-the-difference-between-on-and-once-methods-in-event-emitters)
+   9. [How can you implement custom event emitters in Node.js](#how-can-you-implement-custom-event-emitters-in-nodejs)
+   10. [What are the core features of EventEmitter](#what-are-the-core-features-of-eventemitter)
+   11. [Explain the concept of event propagation in event emitters](#explain-the-concept-of-event-propagation-in-event-emitters)
+   12. [An example of using EventEmitter in a real-world scenario](#an-example-of-using-eventemitter-in-a-real-world-scenario)
+   13. [What kind of applications can be created using event system](#what-kind-of-applications-can-be-created-using-event-system)
+   14. [What are memory leaks in event emitters and how to prevent them](#what-are-memory-leaks-in-event-emitters-and-how-to-prevent-them)
+   15. [Explain the difference between EventEmitter and streams in Node.js](#explain-the-difference-between-eventemitter-and-streams-in-nodejs)
+   16. [What are the limitations or performance considerations when using EventEmitter](#what-are-the-limitations-or-performance-considerations-when-using-eventemitter)
+   17. [What is event batching](#what-is-event-batching)
+   18. [What is the maximum number of listeners that can be attached on a single event emitter instance](#what-is-the-maximum-number-of-listeners-that-can-be-attached-on-a-single-event-emitter-instance)
+   19. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
 
 ## What are Event Emitters?
 
@@ -464,6 +469,154 @@ obj.cleanup();
 ```
 
 In this example, the `eventHandler` function is bound to this using bind(this), ensuring that it maintains a reference to the `MyObject` instance. However, this also creates a cyclic reference between `MyObject` and the `EventEmitter` instance. To break the cyclic reference, the `cleanup` method is introduced. It removes the event listener using `removeListener` and sets `this.emitter` to null, allowing the `MyObject` instance and the `EventEmitter` to be garbage collected properly.
+
+## Explain the difference between EventEmitter and streams in Node.js
+
+In Node.js, both `EventEmitter` and streams are important components for handling events and data. While they serve similar purposes, there are some key differences between the two:
+
+1. Event Emitter:
+   - The `EventEmitter` class is a core module in Node.js that allows you to handle and propagate events within an application.
+   - It follows the observer pattern, where objects can subscribe to events and be notified when those events occur.
+   - Events are emitted using the `emit` method and can be listened to using the `on` or `addListener` methods.
+   - `EventEmitter` is typically used for handling custom events or building event-driven architectures.
+   - It provides flexibility in creating and managing events, but it does not handle data streaming or buffering.
+
+2. Streams:
+   - Streams are a built-in mechanism in Node.js for efficiently handling large amounts of data in a streaming fashion.
+   - Streams represent a sequence of data that can be read from or written to asynchronously, chunk by chunk.
+   - There are several types of streams, such as Readable, Writable, Duplex, and Transform streams, each serving a specific purpose.
+   - Streams are often used for tasks like reading from or writing to files, compressing or decompressing data, network communication, and more.
+   - They provide backpressure handling, which allows the consumer of a stream to control the rate at which data is consumed to prevent overwhelming the system.
+
+In summary, `EventEmitter` is primarily used for handling events and notifications within an application, whereas streams are used for processing and manipulating data in a streaming manner. While `EventEmitter` deals with events and their subscribers, streams handle data transfer in a controlled, chunk-by-chunk manner, allowing for efficient processing of large datasets.
+
+## How does EventEmitter differ from the callback pattern in Node.js?
+
+1. Callback Pattern:
+   - The callback pattern is a common way of handling asynchronous operations in Node.js, where a function accepts a callback function as an argument.
+   - The callback function is called once the asynchronous operation completes, providing the result or an error.
+   - Callbacks are typically used for one-time notifications or single asynchronous operations.
+   - When using callbacks, there is usually a single callback function that handles the result or error from the asynchronous operation.
+   - Callbacks are often used in scenarios where there is a single expected response from an asynchronous operation.
+   - Example use cases include file operations, network requests, and database queries.
+
+In summary, the EventEmitter is a mechanism for handling multiple asynchronous events in an event-driven architecture, allowing multiple listeners to respond independently. On the other hand, the callback pattern is a way to handle a single asynchronous operation by providing a callback function to be executed once the operation completes.
+
+## What are the limitations or performance considerations when using EventEmitter?
+
+- **Memory Usage:** EventEmitter uses memory to store event listeners and their associated data. If you have a large number of listeners or emit events frequently, it can consume significant memory. This is especially important in scenarios where long-lived emitters or listeners are involved, as they can accumulate memory over time. It's important to properly manage and remove unnecessary listeners to avoid excessive memory usage.
+
+```node
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const myEmitter = new EventEmitter();
+
+// Attach a listener that consumes memory
+myEmitter.on('event', () => {
+  // Some memory-intensive operation
+  const data = Buffer.alloc(1024 * 1024); // Allocating 1MB buffer
+  // ...
+});
+
+// Emit the 'event' multiple times
+for (let i = 0; i < 1000; i++) {
+  myEmitter.emit('event');
+}
+```
+
+In this example, we attach a listener to the 'event' event that allocates a 1MB buffer every time it's triggered. If this event is emitted frequently or if there are multiple events with such memory-intensive listeners, it can lead to excessive memory usage, potentially causing performance issues or even out-of-memory errors.
+
+- **Event Loop Blocking:** EventEmitter is synchronous by default, meaning that when an event is emitted, all listeners for that event will be executed synchronously before the control is returned to the emitter. If any of the listeners take a significant amount of time to execute, it can block the event loop and impact the performance of other operations in your application. To mitigate this, ensure that your event listeners are designed to execute quickly and consider using asynchronous patterns within the listeners if necessary.
+
+```node
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const myEmitter = new EventEmitter();
+
+// Attach a listener that blocks the event loop
+myEmitter.on('event', () => {
+  // Long-running operation
+  while (true) {
+    // ...
+  }
+});
+
+// Emit the 'event'
+myEmitter.emit('event');
+
+console.log('This line may never be reached!');
+```
+
+In this example, we attach a listener to the 'event' event that runs an infinite loop. When the event is emitted, the loop will block the event loop, preventing the execution of subsequent code. This can lead to poor performance and unresponsive behavior in your application.
+
+- **Error Handling:** If an error occurs within an event listener, EventEmitter will throw an exception. If not handled properly, this can crash your application. It's important to wrap your event listeners in try-catch blocks to handle any potential errors and prevent them from propagating to the EventEmitter and crashing your application.
+
+- **Garbage Collection:** EventEmitter relies on JavaScript's garbage collection to clean up unused event listeners. If listeners are not properly removed or references to listeners are not cleared, they can continue to consume memory even if they are no longer needed. To prevent memory leaks, it's crucial to remove event listeners when they are no longer needed or when the associated objects are no longer in use.
+
+```node
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const myEmitter = new EventEmitter();
+
+function setupListener() {
+  myEmitter.on('event', () => {
+    console.log('Event received!');
+  });
+}
+
+// Call the setupListener function
+setupListener();
+
+// Emit the 'event'
+myEmitter.emit('event');
+```
+
+In this example, we define a listener for the 'event' event inside the setupListener function. When setupListener is called, the listener is attached to the EventEmitter. However, if the listener is no longer needed or if the setupListener function is called multiple times, new listeners will be added to the EventEmitter without removing the previous ones. This can lead to memory leaks as the unused listeners are not garbage collected. To prevent this, it's essential to remove event listeners when they are no longer needed.
+
+- **Performance Optimization:** If you have performance-critical scenarios, such as emitting a large number of events or having a significant number of listeners, you may need to optimize your code. Techniques like reducing unnecessary event emissions, using event batching or throttling, and optimizing listener execution can improve the overall performance of your application.
+
+## What is event batching?
+
+Event batching in event emitters refers to the technique of grouping multiple events together and emitting them as a batch, rather than emitting each event individually. This can provide performance benefits by reducing the overhead of emitting individual events and potentially optimizing event processing.
+
+Here's an example to illustrate event batching in event emitters:
+
+```node
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const myEmitter = new EventEmitter();
+
+// Batch events and emit them after a certain interval
+function batchEvents(events) {
+  setTimeout(() => {
+    // Emit the batched events
+    for (const event of events) {
+      myEmitter.emit(event.type, event.data);
+    }
+  }, 1000); // Emit every second
+}
+
+// Generate some events to be batched
+const eventsToBatch = [
+  { type: 'event1', data: 'Data for event 1' },
+  { type: 'event2', data: 'Data for event 2' },
+  { type: 'event3', data: 'Data for event 3' },
+];
+
+// Batch the events
+batchEvents(eventsToBatch);
+```
+
+In this example, The batchEvents function takes an array of events and emits them as a batch after a fixed interval. By passing the events to be batched, we avoid emitting them individually. Once the interval elapses, the batched events are emitted one by one, allowing multiple listeners to respond accordingly. Event batching reduces overhead and optimizes event processing, especially in scenarios with a large number of events or frequent emissions.
+
+## What is the maximum number of listeners that can be attached on a single event emitter instance?
+
+In Node.js, the default maximum number of listeners that can be attached on event emitter instance is 10. This number can be modified using the `setMaxListeners` method with the number of listeners you want to modify it with
+Additionally, you can set the maximum number of listeners to an unlimited value by passing 0 as the argument to `setMaxListeners`, effectively removing the limit on the number of listeners.
 
 ## How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )?
 
