@@ -7,7 +7,7 @@
 3. [How to handle errors with event emitters in Node.js](#how-to-handle-errors-with-event-emitters-in-nodejs)
 4. [How to handle multiple event listeners in Node.js](#how-to-handle-multiple-event-listeners-in-nodejs)
 5. [How to remove event listeners in Node.js](#how-to-remove-event-listeners-in-nodejs)
-6. [What is the difference between removeListener and removeAllListeners in event emitters](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters)
+6. [What is the difference between `removeListener` and `removeAllListeners` in event emitters](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters)
 7. [What is the difference between `on` and `once` methods in event emitters](#what-is-the-difference-between-on-and-once-methods-in-event-emitters)
 8. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
 
@@ -32,7 +32,7 @@ myEmitter.emit('myEvent', 'Hello', 'World');
 
 ## How to pass data with event emitters in Node.js?
 
-You can pass data along with event emitters by passing additional arguments to the emit() method. Here's an example:
+You can pass data along with event emitters by passing additional arguments to the `emit()` method. Here's an example:
 
 ```node
 const EventEmitter = require('events');
@@ -92,7 +92,7 @@ myEmitter.emit('myEvent');
 
 ## How to remove event listeners in Node.js?
 
-: The removeListener() method can be used to remove a specific event listener. Here's an example:
+The `removeListener()` method can be used to remove a specific event listener. Here's an example:
 
 ```node
 const EventEmitter = require('events');
@@ -112,7 +112,7 @@ myEmitter.removeListener('myEvent', listener);
 myEmitter.emit('myEvent');  // No output
 ```
 
-## What is the difference between removeListener and removeAllListeners in event emitters?
+## What is the difference between `removeListener` and `removeAllListeners` in event emitters?
 
 The `removeListener(eventName, listener)` method and the `removeAllListeners(eventName)` method in event emitters have different purposes:
 
@@ -137,13 +137,11 @@ In summary, `removeListener()` is used to remove a specific listener from an eve
 
 The `on(eventName, listener)` and `once(eventName, listener)` methods in event emitters have differences in how they handle event listeners:
 
-The `on(eventName, listener)` and `once(eventName, listener)` methods in event emitters have differences in how they handle event listeners:
-
-1. `on(eventName, listener)`:
-   - The `on()` method is used to attach a persistent event listener to an event.
-   - It takes two arguments: the `eventName` (string) and the `listener` (function) to be executed when the event is emitted.
-   - The listener function will be invoked every time the event is emitted.
-   - Even if the event is emitted multiple times, the listener will be called for each occurrence.
+- `on(eventName, listener)`:
+  - The `on()` method is used to attach a persistent event listener to an event.
+  - It takes two arguments: the `eventName` (string) and the `listener` (function) to be executed when the event is emitted.
+  - The listener function will be invoked every time the event is emitted.
+  - Even if the event is emitted multiple times, the listener will be called for each occurrence.
 
 Example:
 
@@ -162,11 +160,11 @@ myEmitter.emit('myEvent');  // Event emitted!
 myEmitter.emit('myEvent');  // Event emitted!
 ```
 
-1. `once(eventName, listener)`:
-   - The `once()` method is used to attach a one-time event listener to an event.
-   - It takes two arguments: the `eventName` (string) and the `listener` (function) to be executed when the event is emitted.
-   - The listener function will be invoked only for the first occurrence of the event.
-   - After the listener is invoked, it is automatically removed from the event emitter, so it won't be called again for subsequent occurrences of the event.
+- `once(eventName, listener)`:
+  - The `once()` method is used to attach a one-time event listener to an event.
+  - It takes two arguments: the `eventName` (string) and the `listener` (function) to be executed when the event is emitted.
+  - The listener function will be invoked only for the first occurrence of the event.
+  - After the listener is invoked, it is automatically removed from the event emitter, so it won't be called again for subsequent occurrences of the event.
 
 Example:
 
