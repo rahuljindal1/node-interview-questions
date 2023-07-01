@@ -2,10 +2,10 @@
 
 ## Table of Contents
 
-1. [What are Event Emitters](#what-are-event-emitters)
-2. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
+1. [What are Event Emitters](#1-what-are-event-emitters)
+2. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#2-how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
 
-## What are Event Emitters?
+## 1. What are Event Emitters?
 
 In Node.js, an event emitter is a core module that allows you to implement the publisher-subscriber pattern. It provides an implementation of the observer pattern, where objects (known as event emitters) can emit named events, and other objects (known as event listeners or subscribers) can listen for those events and react accordingly.
 
@@ -24,7 +24,7 @@ myEmitter.on('myEvent', (arg1, arg2) => {
 myEmitter.emit('myEvent', 'Hello', 'World');
 ```
 
-## How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )?
+## 2. How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )?
 
 Event emitters and publish/subscribe (pub/sub) queues, such as Amazon Simple Queue Service (SQS), have some similarities but serve different purposes and have distinct characteristics. Here are the key differences between event emitters and pub/sub queues:
 
