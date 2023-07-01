@@ -22,6 +22,9 @@
    17. [What is event batching](#what-is-event-batching)
    18. [What is the maximum number of listeners that can be attached on a single event emitter instance](#what-is-the-maximum-number-of-listeners-that-can-be-attached-on-a-single-event-emitter-instance)
    19. [How event emitters are different from Pub/Sub ques like SQS ( Amazon Simple Queue Service )](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)
+2. **Streams**
+   1. [What are streams in Node.js](#what-are-streams-in-nodejs)
+   2. [What is the purpose of using streams in node](#what-is-the-purpose-of-using-streams-in-node)
 
 ## What are Event Emitters?
 
@@ -631,3 +634,55 @@ Event emitters and publish/subscribe (pub/sub) queues, such as Amazon Simple Que
 4. **Scalability and Decoupling**:- : Pub/sub queues like SQS are designed to handle high-throughput scenarios and provide decoupling between publishers and subscribers. Publishers and subscribers can operate independently and at different rates. Event emitters, although they can be used for asynchronous communication, are often more tightly coupled since they directly trigger listeners within the same process.
 
 5. **Message Delivery**:- Pub/sub queues, such as SQS, typically support reliable delivery guarantees. Messages are stored durably and can be delivered reliably to subscribers even in the presence of failures. Event emitters within a single process do not provide built-in mechanisms for reliable message delivery, as they rely on direct function calls and do not persist messages.
+
+## What are streams in Node.js?
+
+In Node.js, streams are a crucial concept that allows efficient handling of data flow. Streams are objects that facilitate the reading or writing of data sequentially, in small chunks, rather than loading the entire data into memory at once. This approach is particularly useful when dealing with large files or network communications.
+
+Node.js provides several types of streams, categorized into four main categories: Readable, Writable, Duplex, and Transform streams.
+
+```node
+const fs = require('fs');
+
+// Create a readable stream from a file
+const readableStream = fs.createReadStream('source.txt');
+
+let data = ''; // Variable to store the accumulated data
+
+// Handle the 'data' event to process the data chunks
+readableStream.on('data', (chunk) => {
+  console.log('Received chunk of data:', chunk);
+  data += chunk;
+});
+
+// Handle the 'end' event when the stream has finished reading
+readableStream.on('end', () => {
+  console.log('Finished reading the data.');
+  console.log('Final data:', data);
+});
+
+// Handle the 'error' event if any error occurs during reading
+readableStream.on('error', (err) => {
+  console.error('An error occurred while reading the stream:', err);
+});
+```
+
+In this example, we create a readable stream using `fs.createReadStream()` to read the contents of a file named 'source.txt'. We then handle three events:
+
+1. **The 'data' event:** This event is emitted when a new chunk of data is available to be read from the stream. In the event handler, we log the received chunk to the console.
+
+2. **The 'end' event:** This event is emitted when the stream has finished reading all the data. In the event handler, we log a message indicating that the data reading is complete.
+
+3. **The 'error' event:** This event is emitted if any error occurs during the stream reading process. In the event handler, we log the error to the console.
+
+## What is the purpose of using streams in node?
+
+1. **Memory Efficiency:** Streams enable you to process data in smaller chunks instead of loading the whole dataset into memory. You can process it incrementally, making it possible to handle the large dataset which might not fit entirely into the memory.
+
+2. **Performance and Speed:** By processing the data in smaller chunks, overall speed of the application can be increased. This is because stream allow for asynchronous processing, which means that while one chunk of the data is being processed, the next chunk can be move into the pipeline. This will minimize the waiting time for the data to be read from source or written to external sources.
+
+3. **Backpressure and Flow Control:** Streams provide a mechanism for handling backpressure, Backpressure can occur if the reading side of a stream is slower than the writing side. Streams allow you to control the flow of data, ensuring that the data is processed at an optimal pace and preventing overwhelming the system or causing data loss.
+
+4. **Compatibility and Modularity:** Streams are designed to be composable and modular. This makes it easier to chain or combine them together to perform complex data processing tasks involving data transformation, filtering or manipulation.
+
+5. **File I/O and Network Operations:** Streams are particularly useful when dealing with file I/O operations or when working with network protocols. They allow you to efficiently read or write files, transmit data over network sockets, or process data from various sources such as HTTP requests or databases.
