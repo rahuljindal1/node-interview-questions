@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. Event-Emitters
+1. **Event-Emitters**
    1. [What are Event Emitters](#what-are-event-emitters)
    2. [How to pass data with event emitters in Node.js](#how-to-pass-data-with-event-emitters-in-nodejs)
    3. [How to handle errors with event emitters in Node.js](#how-to-handle-errors-with-event-emitters-in-nodejs)
