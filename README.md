@@ -33,6 +33,14 @@
    8. [When to use either flowing mode or non-flowing mode](#when-to-use-either-flowing-mode-or-non-flowing-mode)
    9. [How do you handle errors in streams](#how-do-you-handle-errors-in-streams)
    10. [How to transform data using Transform stream](#how-to-transform-data-using-transform-stream)
+   11. [How to handle backpressure in node.js streams](#how-to-handle-backpressure-in-nodejs-streams)
+   12. [How to chain multiple streams together](#how-to-chain-multiple-streams-together)
+   13. [What is the difference between `pipe()` and `pipeline()` method in streams](#what-is-the-difference-between-pipe-and-pipeline-method-in-streams)
+   14. [What are the built-in stream modules provided by Node.js](#what-are-the-built-in-stream-modules-provided-by-nodejs)
+   15. [How to handle end-of-stream events in Node.js](#how-to-handle-end-of-stream-events-in-nodejs)
+   16. [How to handle large files using streams](#how-to-handle-large-files-using-streams)
+   17. [How to consume and produce streams in an HTTP server in Node.js](#how-to-consume-and-produce-streams-in-an-http-server-in-nodejs)
+   18. [What are the example of built-in Duplex streams in node](#what-are-the-example-of-built-in-duplex-streams-in-node)
 
 ## What are Event Emitters?
 
@@ -1000,3 +1008,324 @@ In this example, the `readableStream` reads data from the file `'input.txt'`, an
 When the writable stream's buffer is full, the readable stream will pause sending data. Once the writable stream is ready to receive more data (i.e., the buffer is emptied), it emits a `'drain'` event, and the readable stream resumes sending data.
 
 By using the `.pipe()` method and allowing the streams to handle backpressure, you ensure a smooth flow of data from the source to the destination, preventing memory exhaustion and optimizing the data transfer process.
+
+## How to chain multiple streams together?
+
+In Node.js, you can chain multiple streams together using the `pipe()` or `pipeline()` method.
+Here's an example that demonstrates chaining 4 to 5 streams together where we'll read data from a file, split it into lines, transform each line, filter out specific lines, and finally write the result to another file:
+
+Example using `pipe()` method
+
+```javascript
+const fs = require('fs');
+const { Transform } = require('stream');
+
+// Custom Transform stream to transform each line
+class LineTransform extends Transform {
+  constructor(options) {
+    super(options);
+  }
+
+  _transform(chunk, encoding, callback) {
+    const lines = chunk.toString().split('\n');
+    const transformedLines = lines.map((line) => line.toUpperCase());
+    const transformedText = transformedLines.join('\n');
+    this.push(transformedText);
+    callback();
+  }
+}
+
+// Custom Transform stream to filter specific lines
+class LineFilterTransform extends Transform {
+  constructor(options) {
+    super(options);
+  }
+
+  _transform(chunk, encoding, callback) {
+    const lines = chunk.toString().split('\n');
+    const filteredLines = lines.filter((line) => line.includes('FILTER'));
+    const filteredText = filteredLines.join('\n');
+    this.push(filteredText);
+    callback();
+  }
+}
+
+// Create a readable stream from a file
+const readableStream = fs.createReadStream('input.txt');
+
+// Create transform streams for line transformation and filtering
+const lineTransform = new LineTransform();
+const lineFilterTransform = new LineFilterTransform();
+
+// Create a writable stream to a file
+const writableStream = fs.createWriteStream('output.txt');
+
+// Chain the streams together
+readableStream
+  .pipe(lineTransform)
+  .pipe(lineFilterTransform)
+  .pipe(writableStream)
+  .on('finish', () => {
+    console.log('Pipeline completed.');
+  });
+```
+
+In this example, we create two custom Transform streams: `LineTransform` and `LineFilterTransform`.
+
+- LineTransform transforms each line to uppercase.
+- LineFilterTransform filters out lines that include the word "FILTER".
+
+Example using `pipeline()` method
+
+```javascript
+
+// Initial code to be remain same as above one
+
+// Chain the streams together using the pipeline function
+pipeline(
+  readableStream,
+  lineTransform,
+  lineFilterTransform,
+  writableStream,
+  (error) => {
+    if (error) {
+      console.error('Pipeline failed:', error);
+    } else {
+      console.log('Pipeline completed.');
+    }
+  }
+);
+```
+
+## What is the difference between `pipe()` and `pipeline()` method in streams?
+
+The `pipe()` method and `pipeline()` function in Node.js are both used to chain streams together, but they have some differences in how they handle error propagation and cleanup.
+
+1. Error handling:
+   - `pipe()`: When using `pipe()`, you need to handle errors on each stream manually by listening to the `'error'` event on each stream. If an error occurs in any of the streams, you must handle it explicitly.
+   - `pipeline()`: The `pipeline()` function simplifies error handling. It automatically handles error propagation and passes any error that occurs during the pipeline to the provided callback function. You only need to provide the callback function and handle errors in a centralized manner.
+
+2. Cleanup:
+   - `pipe()`: When using `pipe()`, you need to manually handle stream cleanup and closing. If an error occurs, you must clean up each stream individually by calling the `end()` or `destroy()` method on each stream.
+   - `pipeline()`: The `pipeline()` function automatically handles stream cleanup and closing. If an error occurs in any stream, it will properly destroy and close all streams in the pipeline, preventing resource leaks.
+
+In summary, while both `pipe()` and `pipeline()` are used to chain streams, `pipeline()` provides a more convenient way to handle error propagation and cleanup, making the code cleaner and reducing the chances of resource leaks. It is recommended to use `pipeline()` when chaining multiple streams together, especially when error handling and cleanup are important considerations.
+
+## What are the built-in stream modules provided by Node.js?
+
+Node.js provides several built-in modules for working with streams. Here are the main built-in stream modules available in Node.js:
+
+1. **stream:** This is the core module for working with streams. It provides the base classes and utilities for creating and working with streams.
+2. **fs:** The `fs` module provides file system-related streams, such as `createReadStream()` and `createWriteStream()`, which allow you to read from and write to files using streams.
+3. **http:** The `http` module includes streams for working with HTTP requests and responses. For example, the `request` and `response` objects in HTTP servers and clients are instances of `Readable` and `Writable` streams, respectively.
+4. **zlib:** The `zlib` module provides streams for compressing and decompressing data using various compression algorithms, such as gzip and deflate. It includes streams like `createGzip()` and `createGunzip()`.
+5. **crypto:** The `crypto` module offers streams for encryption and decryption, such as `Cipher` and `Decipher`, allowing you to encrypt and decrypt data using various cryptographic algorithms.
+6. **net:** The `net` module provides streams for creating network sockets. Streams like `Socket` and `Server` allow you to read from and write to network connections.
+7. **child_process:** The `child_process` module includes streams for interacting with child processes, such as `spawn()`, which provides streams for standard input, output, and error of the child process.
+8. **process:** The `process` global object provides standard input, output, and error streams (`process.stdin`, `process.stdout`, and `process.stderr`) for the current Node.js process.
+9. **tty:** The `tty` module provides streams for working with terminal input and output. It includes streams like `Readable` and `Writable` for working with TTY (terminal) devices.
+10. **readline:** The `readline` module offers streams for reading input from a readable stream interactively. It provides a convenient way to create command-line interfaces that accept user input.
+
+These are some of the main built-in stream modules provided by Node.js. Each module offers specific functionality and features for working with different types of streams in various contexts.
+
+## How to handle end-of-stream events in Node.js?
+
+To handle end-of-stream events in Node.js:
+
+- **Readable Stream:** Use the `end` event or check for `null` return value when reading from the stream.
+- **Writable Stream:** Use the `finish` event to know when all data has been written.
+- **Duplex/Transform Stream:** Use the `end` event or check for `null` return value when reading from the stream.
+
+## How to handle large files using streams?
+
+In Node.js, streams are designed to work in a non-blocking manner by default. When you use streams to handle large files, the data is processed incrementally as it becomes available, without blocking the execution of other parts of your code. This allows for efficient handling of large files without causing delays or consuming excessive memory.
+
+Here's an example that demonstrates how to handle large files using streams in a non-blocking manner in Node.js:
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream to read the large file
+const readableStream = fs.createReadStream('largeFile.txt', 'utf8');
+
+// Create a writable stream to write the processed data
+const writableStream = fs.createWriteStream('output.txt', 'utf8');
+
+// Handle the 'data' event, which is emitted when a chunk of data is read
+readableStream.on('data', (chunk) => {
+  // Process the data chunk here (e.g., transform, filter, etc.)
+  const processedData = chunk.toString().toUpperCase();
+
+  // Write the processed data to the writable stream
+  const canContinueWriting = writableStream.write(processedData);
+
+  if (!canContinueWriting) {
+    // The writable stream's buffer is full, so we pause the readable stream temporarily
+    readableStream.pause();
+
+    // Resume reading once the buffer has drained
+    writableStream.once('drain', () => {
+      readableStream.resume();
+    });
+  }
+});
+
+// Handle the 'end' event, which is emitted when the entire file has been read
+readableStream.on('end', () => {
+  // Close the writable stream
+  writableStream.end();
+});
+
+// Handle errors
+readableStream.on('error', (error) => {
+  console.error('An error occurred while reading the file:', error);
+});
+
+writableStream.on('error', (error) => {
+  console.error('An error occurred while writing to the file:', error);
+});
+```
+
+Above code can be shortened using the `pipe()` method, which is a convenient way to handle stream operations in Node.js. The `pipe()` method automatically manages the flow of data between readable and writable streams, taking care of backpressure and error handling.
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream to read the large file
+const readableStream = fs.createReadStream('largeFile.txt', 'utf8');
+
+// Create a writable stream to write the processed data
+const writableStream = fs.createWriteStream('output.txt', 'utf8');
+
+// Pipe the readable stream to the writable stream
+readableStream.pipe(writableStream);
+```
+
+## How to consume and produce streams in an HTTP server in Node.js?
+
+In Node.js, you can consume and produce streams in an HTTP server by leveraging the `request` and `response` objects provided by the `http` module.
+
+```javascript
+const http = require('http');
+const fs = require('fs');
+
+const server = http.createServer((request, response) => {
+  // Readable stream to consume the request body
+  let requestBody = '';
+
+  // Handle 'data' event to capture the request data
+  request.on('data', (chunk) => {
+    requestBody += chunk;
+  });
+
+  // Handle 'end' event when the entire request has been received
+  request.on('end', () => {
+    // Process the request body or perform any necessary operations
+    console.log('Received request body:', requestBody);
+
+    // Readable stream to produce the response data
+    const readableStream = fs.createReadStream('largeFile.txt', 'utf8');
+
+    // Set the appropriate headers
+    response.setHeader('Content-Type', 'text/plain');
+
+    // Pipe the readable stream to the response object to produce the response
+    readableStream.pipe(response);
+  });
+});
+
+server.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+```
+
+In this HTTP server example, we handle incoming `requests` incrementally using the `data` event and concatenate the chunks into a `requestBody`. After processing the request body, we create a readable stream from a large file and set appropriate response headers. By using `readableStream.pipe(response)`, we efficiently send the stream's data as the response without buffering the entire file. This example can be customized for specific requirements, such as additional request body processing or response stream transformations.
+
+## How to create a duplex stream in Node.js?
+
+In Node.js, you can create a duplex stream by using the `Duplex` class from the `stream` module. A duplex stream is a stream that can both read from and write to. Here's an example of how you can create a duplex stream:
+
+```javascript
+const { Duplex } = require('stream');
+
+// Create a custom duplex stream by extending the Duplex class
+class MyDuplexStream extends Duplex {
+  constructor() {
+    super();
+
+    // Initialize any required variables or state
+    this.data = [];
+  }
+
+  _read(size) {
+    // Implement the read logic
+    if (this.data.length === 0) {
+      this.push(null); // Signal the end of data
+    } else {
+      const chunk = this.data.shift();
+      this.push(chunk);
+    }
+  }
+
+  _write(chunk, encoding, callback) {
+    // Implement the write logic
+    this.data.push(chunk);
+    callback();
+  }
+}
+
+// Usage example
+const myStream = new MyDuplexStream();
+
+// Read data from the duplex stream
+myStream.on('data', (data) => {
+  console.log('Read:', data.toString());
+});
+
+// Write data to the duplex stream
+myStream.write('Hello,');
+myStream.write(' World!');
+myStream.end(); // Signal the end of writing
+
+// Output:
+// Read: Hello,
+// Read:  World!
+```
+
+## What are the example of built-in Duplex streams in node?
+
+Node.js provides several built-in duplex streams that you can use out of the box. One such example is the `net.Socket` class, which represents a TCP socket. The `net.Socket` class is a duplex stream that allows reading from and writing to a TCP socket. Here's an example:
+
+```javascript
+const net = require('net');
+
+// Create a TCP server
+const server = net.createServer((socket) => {
+  console.log('Client connected');
+
+  // Read data from the socket
+  socket.on('data', (data) => {
+    console.log('Received:', data.toString());
+
+    // Write data back to the socket
+    socket.write('Server: I received your message');
+  });
+
+  // Handle socket errors
+  socket.on('error', (err) => {
+    console.error('Socket error:', err);
+  });
+
+  // Handle socket closure
+  socket.on('end', () => {
+    console.log('Client disconnected');
+  });
+});
+
+// Start the server
+server.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+```
+
+The socket object is a duplex stream, allowing us to both read from it `(socket.on('data'))` and write to it `(socket.write())`. It handles the bidirectional communication between the server and the client.
