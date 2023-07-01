@@ -25,12 +25,20 @@
 2. **Streams**
    1. [What are streams in Node.js](#what-are-streams-in-nodejs)
    2. [What is the purpose of using streams in node](#what-is-the-purpose-of-using-streams-in-node)
+   3. [What are the different type of streams](#what-are-the-different-type-of-streams)
+   4. [How do you create a readable stream in node](#how-do-you-create-a-readable-stream-in-node)
+   5. [How do you create a writable stream in node?](#how-do-you-create-a-writable-stream-in-node)
+   6. [How do you pipe data from a readable stream to a writable stream in node](#how-can-you-pipe-data-from-a-readable-stream-to-a-writable-stream-in-node)
+   7. [What is the difference between flowing and non-flowing mode in streams](#what-is-the-difference-between-flowing-and-non-flowing-mode-in-streams)
+   8. [When to use either flowing mode or non-flowing mode](#when-to-use-either-flowing-mode-or-non-flowing-mode)
+   9. [How do you handle errors in streams](#how-do-you-handle-errors-in-streams)
+   10. [How to transform data using Transform stream](#how-to-transform-data-using-transform-stream)
 
 ## What are Event Emitters?
 
 In Node.js, an event emitter is a core module that allows you to implement the publisher-subscriber pattern. It provides an implementation of the observer pattern, where objects (known as event emitters) can emit named events, and other objects (known as event listeners or subscribers) can listen for those events and react accordingly.
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 // Create an instance of EventEmitter
@@ -49,7 +57,7 @@ myEmitter.emit('myEvent', 'Hello', 'World');
 
 You can pass data along with event emitters by passing additional arguments to the `emit()` method. Here's an example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -65,7 +73,7 @@ myEmitter.emit('myEvent', 'Hello, World!');
 
 To handle the errors, there is a standard convention that an `error` event to be used followed by an Error object as argument. You can listen for this event and handle any errors that occur. Here's an example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -95,7 +103,7 @@ By handling error events appropriately, you can effectively manage and respond t
 
 You can attach multiple event listeners to an event using the `on()` or `addListener()` methods. Each listener will be invoked when the event is emitted. Here's an example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -123,7 +131,7 @@ myEmitter.emit('myEvent');
 
 The `removeListener()` method can be used to remove a specific event listener. Here's an example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -174,7 +182,7 @@ The `on(eventName, listener)` and `once(eventName, listener)` methods in event e
 
 Example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -197,7 +205,7 @@ myEmitter.emit('myEvent');  // Event emitted!
 
 Example:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const myEmitter = new EventEmitter();
@@ -218,7 +226,7 @@ To summarize, `on()` attaches a persistent event listener that is called every t
 
 In Node.js, you can implement custom event emitters by creating a class that extends the built-in EventEmitter class. Here are the steps to implement a custom event emitter:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {
@@ -279,7 +287,7 @@ By default, EventEmitter operates within a single object or module, where events
 
 We can create a custom event emitter that allows event propagation by forwarding events from a child object to its parent object.
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 class ParentEmitter extends EventEmitter {
@@ -375,7 +383,7 @@ Event-based systems are incredibly versatile and can be used to build a wide ran
 
 - **Unremoved Event Listeners:**
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const emitter = new EventEmitter();
@@ -397,7 +405,7 @@ To prevent a memory leak in this example, make sure to call `emitter.removeListe
 
 - **Global EventEmitter Instances:**
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const globalEmitter = new EventEmitter();
@@ -416,7 +424,7 @@ To prevent a memory leak in this example, avoid using global EventEmitter instan
 
 - **Avoiding Multiple Registrations:**
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 const emitter = new EventEmitter();
@@ -434,7 +442,7 @@ emitter.on('event', eventListener); // Duplicate registration
 
 To prevent duplicate registrations and the associated risks, ensure that event listeners are registered only once:
 
-```node
+```javascript
 emitter.on('event', eventListener);
 
 // Before registering the event listener, check if it's already registered
@@ -445,7 +453,7 @@ if (!emitter.listenerCount('event', eventListener)) {
 
 - **Cyclic Reference:**
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 class MyObject {
@@ -509,7 +517,7 @@ In summary, the EventEmitter is a mechanism for handling multiple asynchronous e
 
 - **Memory Usage:** EventEmitter uses memory to store event listeners and their associated data. If you have a large number of listeners or emit events frequently, it can consume significant memory. This is especially important in scenarios where long-lived emitters or listeners are involved, as they can accumulate memory over time. It's important to properly manage and remove unnecessary listeners to avoid excessive memory usage.
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 // Create an instance of EventEmitter
@@ -532,7 +540,7 @@ In this example, we attach a listener to the 'event' event that allocates a 1MB 
 
 - **Event Loop Blocking:** EventEmitter is synchronous by default, meaning that when an event is emitted, all listeners for that event will be executed synchronously before the control is returned to the emitter. If any of the listeners take a significant amount of time to execute, it can block the event loop and impact the performance of other operations in your application. To mitigate this, ensure that your event listeners are designed to execute quickly and consider using asynchronous patterns within the listeners if necessary.
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 // Create an instance of EventEmitter
@@ -558,7 +566,7 @@ In this example, we attach a listener to the 'event' event that runs an infinite
 
 - **Garbage Collection:** EventEmitter relies on JavaScript's garbage collection to clean up unused event listeners. If listeners are not properly removed or references to listeners are not cleared, they can continue to consume memory even if they are no longer needed. To prevent memory leaks, it's crucial to remove event listeners when they are no longer needed or when the associated objects are no longer in use.
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 // Create an instance of EventEmitter
@@ -587,7 +595,7 @@ Event batching in event emitters refers to the technique of grouping multiple ev
 
 Here's an example to illustrate event batching in event emitters:
 
-```node
+```javascript
 const EventEmitter = require('events');
 
 // Create an instance of EventEmitter
@@ -641,7 +649,7 @@ In Node.js, streams are a crucial concept that allows efficient handling of data
 
 Node.js provides several types of streams, categorized into four main categories: Readable, Writable, Duplex, and Transform streams.
 
-```node
+```javascript
 const fs = require('fs');
 
 // Create a readable stream from a file
@@ -686,3 +694,309 @@ In this example, we create a readable stream using `fs.createReadStream()` to re
 4. **Compatibility and Modularity:** Streams are designed to be composable and modular. This makes it easier to chain or combine them together to perform complex data processing tasks involving data transformation, filtering or manipulation.
 
 5. **File I/O and Network Operations:** Streams are particularly useful when dealing with file I/O operations or when working with network protocols. They allow you to efficiently read or write files, transmit data over network sockets, or process data from various sources such as HTTP requests or databases.
+
+## What are the different type of streams?
+
+1. **Readable Streams:** Readable streams allow you to read data from a source, such as a file or an HTTP request. They emit events like "data" when new data is available and "end" when there is no more data to be read.
+
+2. **Writable Streams:** Writable streams allow you to write data to a destination, such as a file or an HTTP response. You can write data to a writable stream using the `write()` method, and it will be buffered and eventually flushed to the underlying resource.
+
+3. **Duplex Streams:** Duplex streams are both readable and writable. They allow you to both read and write data. For example, a TCP socket ( Database connection ) is a duplex stream because you can both send and receive data over the socket.
+
+4. **Transform Streams:** Transform streams are a special type of duplex stream that can modify or transform the data as it flows through the stream. You can think of them as a combination of readable and writable streams with an intermediate processing step. They are commonly used for tasks like data compression, encryption, or parsing.
+
+## How do you create a readable stream in node?
+
+In Node.js, you can create a readable stream by using the `Readable` class from the built-in `stream` module. Here's an example of how to create a readable stream:
+
+```javascript
+const { Readable } = require('stream');
+
+// Create a custom readable stream by extending the Readable class
+class MyReadableStream extends Readable {
+  constructor(data) {
+    super();
+    this.data = data;
+  }
+
+  // Implement the _read method to push data to the stream
+  _read() {
+    // Read and push data to the stream
+    const chunk = this.data.pop();
+    if (chunk) {
+      this.push(chunk);
+    } else {
+      // End the stream when there is no more data
+      this.push(null);
+    }
+  }
+}
+
+// Usage
+const data = ['Hello', 'World', '!'];
+const readableStream = new MyReadableStream(data);
+
+// Read data from the stream
+readableStream.on('data', (chunk) => {
+  console.log(chunk.toString());
+});
+
+// Handle the end of the stream
+readableStream.on('end', () => {
+  console.log('End of stream');
+});
+```
+
+In this example, we create a custom readable stream `MyReadableStream` by extending the `Readable` class. The `_read` method is implemented to push data to the stream using the `push` method. When there is no more data, we push `null` to indicate the end of the stream.
+
+We then create an instance of `MyReadableStream` with an array of data. The `data` event is emitted whenever there is new data available in the stream, and the `end` event is emitted when there is no more data.
+
+You can replace the logic inside `_read` with your own data source, such as reading from a file or making asynchronous calls to retrieve data, depending on your use case.
+
+How do you create a writable stream in node
+
+## How do you create a writable stream in node?
+
+```javascript
+const { Writable } = require('stream');
+
+// Create a custom writable stream by extending the Writable class
+class MyWritableStream extends Writable {
+  constructor() {
+    super();
+    // Initialize any necessary state or variables
+  }
+
+  // Implement the _write method to handle incoming data
+  _write(chunk, encoding, callback) {
+    // Process the incoming data chunk
+    console.log('Received data:', chunk.toString());
+
+    // Call the callback function to signal the completion of processing the chunk
+    callback();
+  }
+}
+
+// Usage
+const writableStream = new MyWritableStream();
+
+// Write data to the stream
+writableStream.write('Hello, ');
+writableStream.write('World!');
+writableStream.end(); // Signal the end of writing
+
+// Handle the 'finish' event when all data has been written
+writableStream.on('finish', () => {
+  console.log('Finished writing data');
+});
+```
+
+You can replace the logic inside `_write` with your own implementation, such as writing data to a file or sending data to an external service, depending on your use case.
+
+The writable stream for writing data in file can also be created using `fs.createWriteStream` method.
+
+```javascript
+const fs = require('fs');
+
+const writableStream = fs.createWriteStream('output.txt');
+
+writableStream.write('Hello, ');
+writableStream.write('World!');
+writableStream.end(); // Signal the end of writing
+
+writableStream.on('finish', () => {
+  console.log('Data has been written to the file');
+});
+```
+
+## How can you pipe data from a readable stream to a writable stream in node?
+
+In Node.js, you can pipe data from a readable stream to a writable stream using the `pipe()` method. The `pipe()` method allows you to easily consume data from a readable stream and write it directly to a writable stream without manually handling the data chunks.
+
+Here's an example that demonstrates how to pipe data from a readable stream to a writable stream:
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream
+const readableStream = fs.createReadStream('input.txt');
+
+// Create a writable stream
+const writableStream = fs.createWriteStream('output.txt');
+
+// Pipe the data from the readable stream to the writable stream
+readableStream.pipe(writableStream);
+
+// Optional: Listen for 'finish' event to know when the data has been written
+writableStream.on('finish', () => {
+  console.log('Data has been written to the writable stream.');
+});
+```
+
+Note that the `pipe()` method takes care of error handling and closing the streams, so you don't need to explicitly handle those aspects in this simple example.
+
+## What is the difference between flowing and non-flowing mode in streams?
+
+**Flowing Mode:** In flowing mode, data is read from the stream automatically as soon as it's available, and events are emitted accordingly. The data flows through the stream continuously, and you can consume it using event listeners or callbacks.
+
+Example:
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream
+const readableStream = fs.createReadStream('file.txt');
+
+// Set the encoding for the readable stream
+readableStream.setEncoding('utf8');
+
+// Listen to the 'data' event to consume the data
+readableStream.on('data', (chunk) => {
+  console.log(`Received data: ${chunk}`);
+});
+
+// Listen to the 'end' event to know when the stream ends
+readableStream.on('end', () => {
+  console.log('Stream ended');
+});
+```
+
+**Non-flowing Mode:** In non-flowing mode, the data is not read automatically. Instead, you need to manually request the data from the stream using the `.read()` method. The stream enters a paused state until you explicitly request the data.
+
+Example:
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream
+const readableStream = fs.createReadStream('file.txt');
+
+// Set the encoding for the readable stream
+readableStream.setEncoding('utf8');
+
+// Listen to the 'readable' event to know when data can be read
+readableStream.on('readable', () => {
+  let chunk;
+  while ((chunk = readableStream.read()) !== null) {
+    console.log(`Received data: ${chunk}`);
+  }
+});
+
+// Listen to the 'end' event to know when the stream ends
+readableStream.on('end', () => {
+  console.log('Stream ended');
+});
+```
+
+In summary, the main difference between flowing mode and non-flowing mode in Node.js streams is the automatic data consumption in flowing mode versus the manual data retrieval in non-flowing mode.
+
+## When to use either flowing mode or non-flowing mode?
+
+**Flowing Mode:**
+
+1. **Real-time data processing:** Suitable for applications that require immediate handling of incoming data.
+2. **Large data sets:** Beneficial for processing large amounts of data in smaller, manageable chunks.
+3. **Event-driven applications:** Aligns well with event-driven architectures, allowing reactive processing of data events.
+
+**Non-Flowing Mode:**
+
+1. **Manual control:** Provides fine-grained control over data retrieval, enabling custom logic and backpressure handling.
+2. **Parsing or transformation:** Enables custom parsing or transformation operations on data read from the stream.
+3. **Custom stream implementations:** Allows building custom stream behavior based on unique requirements.
+
+## How do you handle errors in streams?
+
+In Node.js, you can handle errors in streams by utilizing the error event. Here's an example that demonstrates error handling in a readable and writable stream:
+
+```javascript
+const fs = require('fs');
+
+// Create a readable stream from a file
+const readableStream = fs.createReadStream('input.txt');
+
+// Create a writable stream to a file
+const writableStream = fs.createWriteStream('output.txt');
+
+// Handle error event on the readable stream
+readableStream.on('error', (error) => {
+  console.error('Error reading the file:', error);
+});
+
+// Handle error event on the writable stream
+writableStream.on('error', (error) => {
+  console.error('Error writing to the file:', error);
+});
+
+// Pipe the data from the readable stream to the writable stream
+readableStream.pipe(writableStream);
+```
+
+If an error occurs during the reading or writing process, the respective error event handler will be triggered, allowing you to handle the error appropriately.
+
+## How to transform data using Transform stream?
+
+Transform streams in Node.js allow you to transform data as it passes through the stream. You can modify, filter, or manipulate the data in some way before it is passed on to the next stream or written to a destination. To transform data using Transform streams, you typically extend the `Transform` class from the `stream` module. Here's an example:
+
+```javascript
+const { Transform } = require('stream');
+const fs = require('fs')
+
+// Custom transform stream
+class UpperCaseTransform extends Transform {
+  _transform(chunk, encoding, callback) {
+    // Transform the chunk (in this case, convert to uppercase)
+    const transformedChunk = chunk.toString().toUpperCase();
+
+    // Pass the transformed chunk to the next stream
+    this.push(transformedChunk);
+
+    // Invoke the callback to signal that the transformation is complete
+    callback();
+  }
+}
+
+// Create a readable stream
+const readableStream = fs.createReadStream('input.txt');
+
+// Create an instance of the custom transform stream
+const upperCaseTransform = new UpperCaseTransform();
+
+// Create a writable stream
+const writableStream = fs.createWriteStream('output.txt')
+
+// Pipe the data from the readable stream through the transform stream to the writable stream
+readableStream.pipe(upperCaseTransform).pipe(writableStream);
+```
+
+To use the custom transform stream, we create an instance of `UpperCaseTransform` and pipe the data from the readable stream through the transform stream and finally to the writable stream.
+
+As the data flows through the transform stream, each chunk will be transformed according to the logic defined in the `_transform` method before being passed to the next stream.
+
+## How to handle backpressure in node.js streams?
+
+Backpressure is a mechanism used in Node.js streams to handle data transfer when the receiving end is slower or unable to keep up with the data flow from the source. It prevents a buildup of data in the buffer by pausing the data transfer until the consumer is ready to process more data.
+
+In Node.js, the `.pipe()` method is commonly used to transfer data from a readable stream to a writable stream. The backpressure mechanism is automatically handled by the `Writable` stream's `.write()` method, which returns a boolean value indicating if the data can be written immediately or if backpressure needs to be applied.
+
+When the writable stream's `.write()` method returns `false`, it means that the data buffer is full or the write queue is busy, and backpressure is applied. The readable stream pauses sending data until the writable stream emits a `'drain'` event, indicating that it is ready to receive more data. Once the writable stream is ready, the readable stream resumes sending data.
+
+Here's an example that demonstrates backpressure in Node.js streams:
+
+```javascript
+const fs = require('fs');
+
+const readableStream = fs.createReadStream('input.txt');
+const writableStream = fs.createWriteStream('output.txt');
+
+readableStream.pipe(writableStream);
+
+writableStream.on('drain', () => {
+  console.log('Writable stream drained, ready to receive more data');
+});
+```
+
+In this example, the `readableStream` reads data from the file `'input.txt'`, and the `writableStream` writes data to the file `'output.txt'`. The `.pipe()` method connects the readable stream to the writable stream, automatically handling backpressure.
+
+When the writable stream's buffer is full, the readable stream will pause sending data. Once the writable stream is ready to receive more data (i.e., the buffer is emptied), it emits a `'drain'` event, and the readable stream resumes sending data.
+
+By using the `.pipe()` method and allowing the streams to handle backpressure, you ensure a smooth flow of data from the source to the destination, preventing memory exhaustion and optimizing the data transfer process.
