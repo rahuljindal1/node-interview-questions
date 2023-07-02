@@ -40,7 +40,8 @@
    15. [How to handle end-of-stream events in Node.js](#how-to-handle-end-of-stream-events-in-nodejs)
    16. [How to handle large files using streams](#how-to-handle-large-files-using-streams)
    17. [How to consume and produce streams in an HTTP server in Node.js](#how-to-consume-and-produce-streams-in-an-http-server-in-nodejs)
-   18. [What are the example of built-in Duplex streams in node](#what-are-the-example-of-built-in-duplex-streams-in-node)
+   18. [How to create a duplex stream in Node.js](#how-to-create-a-duplex-stream-in-nodejs)
+   19. [What are the example of built-in Duplex streams in node](#what-are-the-example-of-built-in-duplex-streams-in-node)
 
 ## What are Event Emitters?
 
