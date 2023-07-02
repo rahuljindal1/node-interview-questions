@@ -42,6 +42,15 @@
    17. [How to consume and produce streams in an HTTP server in Node.js](#how-to-consume-and-produce-streams-in-an-http-server-in-nodejs)
    18. [How to create a duplex stream in Node.js](#how-to-create-a-duplex-stream-in-nodejs)
    19. [What are the example of built-in Duplex streams in node](#what-are-the-example-of-built-in-duplex-streams-in-node)
+3. **Multi Threading**
+   1. [What is multithreading, and why is it important in Node.js](#what-is-multithreading-and-why-is-it-important-in-nodejs)
+   2. [How to calculate the number of threads in node.js](#how-to-calculate-the-number-of-threads-in-nodejs)
+   3. [How does Node.js handle concurrency by default, without multithreading](#how-does-nodejs-handle-concurrency-by-default-without-multithreading)
+   4. [an you explain the difference between multithreading and multiprocessing](#can-you-explain-the-difference-between-multithreading-and-multiprocessing)
+   5. [What are the limitations or potential issues when using multithreading in Node.js](#what-are-the-limitations-or-potential-issues-when-using-multithreading-in-nodejs)
+   6. [What are the different ways to achieve multithreading in Node.js](#what-are-the-different-ways-to-achieve-multithreading-in-nodejs)
+   7. [How can we create and manage worker threads in Node.js](#how-can-we-create-and-manage-worker-threads-in-nodejs)
+   8. [How does communication between the main thread and worker threads occur in Node.js](#how-does-communication-between-the-main-thread-and-worker-threads-occur-in-nodejs)
 
 ## What are Event Emitters?
 
@@ -1330,3 +1339,179 @@ server.listen(3000, () => {
 ```
 
 The socket object is a duplex stream, allowing us to both read from it `(socket.on('data'))` and write to it `(socket.write())`. It handles the bidirectional communication between the server and the client.
+
+## What is multithreading, and why is it important in Node.js?
+
+Multithreading is a programming concept that refers to the concurrent execution of multiple threads within a single process. A thread is a lightweight unit of execution that can independently perform tasks within a program.
+
+Node.js is an event-driven, non-blocking I/O platform built on top of Chrome's V8 JavaScript engine. By default, Node.js runs in a single-threaded, event-loop architecture. This means that it processes incoming requests one at a time, without utilizing multiple cores or threads.
+
+However, Node.js provides hidden threads through the `libuv` library and they can be accessed via a module called `worker_threads` that allows developers to create and manage multithreaded applications. This module enables the execution of JavaScript code in separate threads, allowing for parallel processing and improved performance in certain scenarios.
+
+Multithreading is important in Node.js for a few reasons:
+
+1. **Utilizing multiple cores:** By leveraging multithreading, Node.js can make use of multiple CPU cores available on a machine. This enables the execution of multiple tasks simultaneously, resulting in better performance and increased throughput.
+
+2. **CPU-intensive tasks:** Node.js is well-suited for handling I/O-bound operations, such as network requests or file system operations, due to its non-blocking nature. However, for CPU-intensive tasks that require significant computation, multithreading can help distribute the workload across multiple threads and prevent blocking the event loop, ensuring responsiveness for other requests.
+
+3. **Complex computations:** Some applications require executing computationally intensive algorithms or performing heavy data processing. With multithreading, these tasks can be offloaded to separate threads, allowing the main thread to remain responsive and handle other requests or events concurrently.
+
+It's important to note that while multithreading can be beneficial in certain scenarios, it introduces complexities such as shared memory access and synchronization. Care must be taken to handle thread safety and avoid potential race conditions or data inconsistencies when working with multiple threads in Node.js.
+
+## How to calculate the number of threads in node.js?
+
+To calculate the number threads available in the Worker Thread module, you ca use the `os` module provided by Node.js. Here's an example how you can do it:
+
+```javascript
+const os = require('os');
+
+const numThreads = os.cpus().length;
+console.log('Number of available threads:', numThreads);
+```
+
+The os.cpus() method returns an array of objects representing the available CPU cores on your system. The length of this array corresponds to the number of available threads you can use.
+
+It is possible to create more threads than the number of CPU cores in Node.js using the Worker Threads module. The Worker Threads module allows you to create and manage additional threads for parallel processing, even if the number of threads exceeds the number of available CPU cores. In this scenario, CPU core will be responsible for handling more than one thread.
+
+## How does Node.js handle concurrency by default, without multithreading?
+
+1. **Event Loop:** Node.js relies on an event loop, which is a mechanism for handling and executing asynchronous operations. The event loop continuously checks for pending events and executes their associated callbacks when they become available.
+
+2. **Non-Blocking I/O:** Node.js utilizes non-blocking I/O operations, such as file system operations or network requests. When an I/O operation is initiated, instead of waiting for it to complete, Node.js registers a callback function and continues executing other tasks. When the I/O operation finishes, the event loop triggers the associated callback, allowing Node.js to continue processing the result.
+
+3. **Callbacks and Asynchronous APIs:** Node.js encourages the use of asynchronous APIs that accept callbacks. These callbacks are executed when the corresponding operation completes. For example, when reading a file, you provide a callback function that is called with the file's contents when the reading is finished.
+
+4. **Event-Driven Architecture:** Node.js is event-driven, meaning it responds to events emitted by various sources like I/O operations, timers, or user interactions. When an event occurs, Node.js invokes the registered callback function associated with that event.
+
+5. **Event Loop Phases:** The event loop in Node.js has different phases, including timers, I/O polling, callbacks, and idle. During each phase, the event loop checks for events, executes associated callbacks, and moves to the next phase if no events are pending. This ensures efficient utilization of system resources.
+
+## Can you explain the difference between multithreading and multiprocessing?
+
+Multiprocessing involves executing multiple processes, where each process runs independently and has its own memory space. Processes do not share memory by default and communicate with each other using `inter-process communication (IPC)` mechanisms. Each process runs in its own address space and has its own system resources.
+
+1. **Memory:** In multithreading, threads share the same memory space, allowing them to access shared data directly. In multiprocessing, processes have separate memory spaces, requiring explicit mechanisms like IPC for communication between processes.
+
+2. **Communication:** In multithreading, communication between threads is simpler and more efficient, as they can directly access shared memory. In multiprocessing, inter-process communication mechanisms, such as pipes, shared memory, or message passing, are needed for communication between processes.
+
+3. **Complexity:** Multithreading can introduce complexities like race conditions and synchronization issues due to shared memory access. Multiprocessing, with separate memory spaces, offers better isolation between processes but requires explicit communication mechanisms.
+
+4. **Fault Isolation:** In multithreading, a bug or error in one thread can potentially affect the entire process. In multiprocessing, each process runs independently, providing better fault isolation. If one process crashes, other processes can continue execution.
+
+## What are the limitations or potential issues when using multithreading in Node.js?
+
+1. **Shared Memory Access:** When multiple threads share memory, it can lead to potential concurrency issues, such as race conditions, deadlocks, and data inconsistency. Synchronizing access to shared data becomes crucial to ensure correctness. Node.js provides synchronization mechanisms like locks, semaphores, and atomic operations, but handling shared memory safely requires careful programming practices.
+
+2. **Complex Debugging:** Multithreaded applications can be more challenging to debug compared to single-threaded ones. Issues like race conditions or deadlocks may not be easily reproducible and can be challenging to diagnose and resolve.
+
+3. **Increased Complexity:** Introducing multithreading adds complexity to the codebase. It requires careful design, synchronization mechanisms, and error handling. Writing correct and efficient multithreaded code can be more challenging than writing single-threaded code.
+
+4. **Shared Resources:** When using multithreading, resources like CPU, memory, and I/O can become shared among multiple threads. Managing and balancing the allocation of these shared resources can be complex and may require additional considerations.
+
+5. **C++ Add-ons Compatibility:** If your Node.js application includes C++ add-ons, not all C++ libraries are designed to be thread-safe. Multithreading can introduce additional challenges when integrating and interacting with non-thread-safe C++ code.
+
+6. **Thread Management Overhead:** Managing multiple threads incurs overhead due to thread creation, context switching, and synchronization. In certain scenarios, this overhead may offset the performance gains achieved through parallelism.
+
+## What are the different ways to achieve multithreading in Node.js?
+
+In Node.js, there are several ways to achieve multithreading and parallelism. Here are the different approaches available:
+
+1. **Worker Threads:** Node.js provides a built-in module called "worker_threads" that allows you to create and manage multithreaded JavaScript workers. Worker threads are separate instances of the V8 engine running in different threads, allowing parallel execution. They can share memory and communicate with each other using message passing.
+
+2. **Cluster module:** The "cluster" module is another built-in module in Node.js that enables you to create a cluster of processes. Each process runs in a separate instance of Node.js, and the master process manages the distribution of incoming connections across the worker processes. This approach leverages multiple processes to achieve parallelism and load balancing.
+
+3. **Child Processes:** Node.js provides the "child_process" module, which allows you to spawn child processes and communicate with them. You can offload heavy computations or tasks to separate child processes, utilizing the available CPU cores. Communication between the parent and child processes can be achieved through inter-process communication mechanisms like message passing or standard input/output streams.
+
+4. **External Libraries:** There are external libraries available that provide multithreading capabilities in Node.js. For example, the "threads" or "threads.js" library allows you to create and manage JavaScript threads using a thread pool. These libraries provide abstractions for managing worker threads, thread pools, and shared memory.
+
+5. **Offloading to Separate Processes:** Instead of using threads, you can offload CPU-intensive tasks to separate Node.js processes. These processes can communicate with each other using inter-process communication mechanisms like IPC, message queues, or sockets.
+
+6. **Native Add-ons:** Node.js allows the creation of native add-ons using C/C++. Native add-ons can utilize multithreading capabilities directly by using threading libraries like pthreads or OpenMP. However, this approach requires expertise in C/C++ programming and may introduce additional complexity.
+
+## How can we create and manage worker threads in Node.js?
+
+Here's an example of how to create and manage worker threads in Node.js:
+
+```javascript
+const { Worker } = require('worker_threads');
+
+// Create a new worker thread
+const worker = new Worker('./worker.js');
+
+// Listen for messages from the worker thread
+worker.on('message', message => {
+  console.log('Received message from worker:', message);
+});
+
+// Send a message to the worker thread
+worker.postMessage('Hello from the main thread!');
+
+// Terminate the worker thread after a certain time
+setTimeout(() => {
+  worker.terminate();
+}, 5000);
+```
+
+Here's an example of the worker.js file:
+
+```javascript
+const { parentPort } = require('worker_threads');
+
+// Listen for messages from the main thread
+parentPort.on('message', message => {
+  console.log('Received message from main thread:', message);
+
+  // Send a response back to the main thread
+  parentPort.postMessage('Hello from the worker thread!');
+});
+```
+
+Above code will yield following output:-
+
+```javascript
+Received message from main thread: Hello from the main thread!
+Received message from worker: Hello from the worker thread!
+```
+
+That's a basic example of how to create and manage worker threads in Node.js using the `worker_threads` module. You can extend this functionality to perform more complex tasks or parallelize CPU-intensive operations in your application.
+
+## How does communication between the main thread and worker threads occur in Node.js?
+
+In Node.js, communication between the main thread and worker threads occurs through message passing. The main thread and worker threads can exchange data and messages using the `postMessage()` method and the `message` event.
+
+Here's how the communication process works:
+
+1. **Main Thread to Worker Thread**: To send a message from the main thread to a worker thread, you can use the `postMessage()` method on the worker object. For example:
+
+   ```javascript
+   worker.postMessage('Hello from the main thread!');
+   ```
+
+   The main thread can pass various types of data as the message, including strings, numbers, objects, or even more complex data structures.
+
+2. **Worker Thread to Main Thread**: To send a message from a worker thread to the main thread, you use the `postMessage()` method on the `parentPort` object. In the worker script, you have access to the `parentPort` object, which represents the communication channel with the main thread. For example:
+
+   ```javascript
+   parentPort.postMessage('Hello from the worker thread!');
+   ```
+
+   Similar to the main thread, the worker thread can send various types of data as the message.
+
+3. **Event Handling**: Both the main thread and worker threads listen for messages using the `message` event. When a message is received, the corresponding event handler is triggered, allowing you to handle the received message. For example, in the main thread:
+
+   ```javascript
+   worker.on('message', message => {
+     console.log('Received message from worker:', message);
+   });
+   ```
+
+   And in the worker thread:
+
+   ```javascript
+   parentPort.on('message', message => {
+     console.log('Received message from main thread:', message);
+   });
+   ```
+
+   The event handlers can process the received messages as needed, perform operations, and send responses back if required.
+
+It's important to note that the messages sent between the main thread and worker threads are copied and not shared by reference. Therefore, changes made to objects or data in one thread will not affect the original objects or data in the other thread. If you need to send complex objects or large amounts of data between threads, consider using serialization techniques like JSON.stringify() and JSON.parse() to ensure proper data transfer.
