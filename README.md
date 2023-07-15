@@ -26,35 +26,42 @@
 | 18  | [What is the maximum number of listeners that can be attached to a single event emitter instance?](#what-is-the-maximum-number-of-listeners-that-can-be-attached-on-a-single-event-emitter-instance) |
 | 19  | [How event emitters are different from Pub/Sub queues like SQS (Amazon Simple Queue Service)?](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-) |
 
-1. **Streams**
-   1. [What are streams in Node.js](#what-are-streams-in-nodejs)
-   2. [What is the purpose of using streams in node](#what-is-the-purpose-of-using-streams-in-node)
-   3. [What are the different type of streams](#what-are-the-different-type-of-streams)
-   4. [How do you create a readable stream in node](#how-do-you-create-a-readable-stream-in-node)
-   5. [How do you create a writable stream in node?](#how-do-you-create-a-writable-stream-in-node)
-   6. [How do you pipe data from a readable stream to a writable stream in node](#how-can-you-pipe-data-from-a-readable-stream-to-a-writable-stream-in-node)
-   7. [What is the difference between flowing and non-flowing mode in streams](#what-is-the-difference-between-flowing-and-non-flowing-mode-in-streams)
-   8. [When to use either flowing mode or non-flowing mode](#when-to-use-either-flowing-mode-or-non-flowing-mode)
-   9. [How do you handle errors in streams](#how-do-you-handle-errors-in-streams)
-   10. [How to transform data using Transform stream](#how-to-transform-data-using-transform-stream)
-   11. [How to handle backpressure in node.js streams](#how-to-handle-backpressure-in-nodejs-streams)
-   12. [How to chain multiple streams together](#how-to-chain-multiple-streams-together)
-   13. [What is the difference between `pipe()` and `pipeline()` method in streams](#what-is-the-difference-between-pipe-and-pipeline-method-in-streams)
-   14. [What are the built-in stream modules provided by Node.js](#what-are-the-built-in-stream-modules-provided-by-nodejs)
-   15. [How to handle end-of-stream events in Node.js](#how-to-handle-end-of-stream-events-in-nodejs)
-   16. [How to handle large files using streams](#how-to-handle-large-files-using-streams)
-   17. [How to consume and produce streams in an HTTP server in Node.js](#how-to-consume-and-produce-streams-in-an-http-server-in-nodejs)
-   18. [How to create a duplex stream in Node.js](#how-to-create-a-duplex-stream-in-nodejs)
-   19. [What are the example of built-in Duplex streams in node](#what-are-the-example-of-built-in-duplex-streams-in-node)
-2. **Multi Threading**
-   1. [What is multithreading, and why is it important in Node.js](#what-is-multithreading-and-why-is-it-important-in-nodejs)
-   2. [How to calculate the number of threads in node.js](#how-to-calculate-the-number-of-threads-in-nodejs)
-   3. [How does Node.js handle concurrency by default, without multithreading](#how-does-nodejs-handle-concurrency-by-default-without-multithreading)
-   4. [an you explain the difference between multithreading and multiprocessing](#can-you-explain-the-difference-between-multithreading-and-multiprocessing)
-   5. [What are the limitations or potential issues when using multithreading in Node.js](#what-are-the-limitations-or-potential-issues-when-using-multithreading-in-nodejs)
-   6. [What are the different ways to achieve multithreading in Node.js](#what-are-the-different-ways-to-achieve-multithreading-in-nodejs)
-   7. [How can we create and manage worker threads in Node.js](#how-can-we-create-and-manage-worker-threads-in-nodejs)
-   8. [How does communication between the main thread and worker threads occur in Node.js](#how-does-communication-between-the-main-thread-and-worker-threads-occur-in-nodejs)
+### Streams
+
+| No. | Questions |
+| --- | --------- |
+| 1.  | [What are streams in Node.js?](#what-are-streams-in-nodejs) |
+| 2.  | [What is the purpose of using streams in Node.js?](#what-is-the-purpose-of-using-streams-in-nodejs) |
+| 3.  | [What are the different types of streams?](#what-are-the-different-types-of-streams) |
+| 4.  | [How do you create a readable stream in Node.js?](#how-do-you-create-a-readable-stream-in-nodejs) |
+| 5.  | [How do you create a writable stream in Node.js?](#how-do-you-create-a-writable-stream-in-nodejs) |
+| 6.  | [How can you pipe data from a readable stream to a writable stream in Node.js?](#how-can-you-pipe-data-from-a-readable-stream-to-a-writable-stream-in-nodejs) |
+| 7.  | [What is the difference between flowing and non-flowing mode in streams?](#what-is-the-difference-between-flowing-and-non-flowing-mode-in-streams) |
+| 8.  | [When to use either flowing mode or non-flowing mode?](#when-to-use-either-flowing-mode-or-non-flowing-mode) |
+| 9.  | [How do you handle errors in streams?](#how-do-you-handle-errors-in-streams) |
+| 10. | [How do you transform data using Transform stream?](#how-do-you-transform-data-using-transform-stream) |
+| 11. | [How do you handle backpressure in Node.js streams?](#how-do-you-handle-backpressure-in-nodejs-streams) |
+| 12. | [How do you chain multiple streams together?](#how-do-you-chain-multiple-streams-together) |
+| 13. | [What is the difference between `pipe()` and `pipeline()` method in streams?](#what-is-the-difference-between-pipe-and-pipeline-method-in-streams) |
+| 14. | [What are the built-in stream modules provided by Node.js?](#what-are-the-built-in-stream-modules-provided-by-nodejs) |
+| 15. | [How do you handle end-of-stream events in Node.js?](#how-do-you-handle-end-of-stream-events-in-nodejs) |
+| 16. | [How do you handle large files using streams?](#how-do-you-handle-large-files-using-streams) |
+| 17. | [How do you consume and produce streams in an HTTP server in Node.js?](#how-do-you-consume-and-produce-streams-in-an-http-server-in-nodejs) |
+| 18. | [How do you create a duplex stream in Node.js?](#how-do-you-create-a-duplex-stream-in-nodejs) |
+| 19. | [What are examples of built-in Duplex streams in node?](#what-are-examples-of-built-in-duplex-streams-in-node) |
+
+### Multi Threading
+
+| No. | Questions |
+| --- | --------- |
+| 1.  | [What is multithreading, and why is it important in Node.js?](#what-is-multithreading-and-why-is-it-important-in-nodejs) |
+| 2.  | [How to calculate the number of threads in Node.js?](#how-to-calculate-the-number-of-threads-in-nodejs) |
+| 3.  | [How does Node.js handle concurrency by default, without multithreading?](#how-does-nodejs-handle-concurrency-by-default-without-multithreading) |
+| 4.  | [Can you explain the difference between multithreading and multiprocessing?](#can-you-explain-the-difference-between-multithreading-and-multiprocessing) |
+| 5.  | [What are the limitations or potential issues when using multithreading in Node.js?](#what-are-the-limitations-or-potential-issues-when-using-multithreading-in-nodejs) |
+| 6.  | [What are the different ways to achieve multithreading in Node.js?](#what-are-the-different-ways-to-achieve-multithreading-in-nodejs) |
+| 7.  | [How can we create and manage worker threads in Node.js?](#how-can-we-create-and-manage-worker-threads-in-nodejs) |
+| 8.  | [How does communication between the main thread and worker threads occur in Node.js?](#how-does-communication-between-the-main-thread-and-worker-threads-occur-in-nodejs) |
 
 ## What are Event Emitters?
 
@@ -705,7 +712,7 @@ In this example, we create a readable stream using `fs.createReadStream()` to re
 
 3. **The 'error' event:** This event is emitted if any error occurs during the stream reading process. In the event handler, we log the error to the console.
 
-## What is the purpose of using streams in node?
+## What is the purpose of using streams in Node.js?
 
 1. **Memory Efficiency:** Streams enable you to process data in smaller chunks instead of loading the whole dataset into memory. You can process it incrementally, making it possible to handle the large dataset which might not fit entirely into the memory.
 
@@ -717,7 +724,7 @@ In this example, we create a readable stream using `fs.createReadStream()` to re
 
 5. **File I/O and Network Operations:** Streams are particularly useful when dealing with file I/O operations or when working with network protocols. They allow you to efficiently read or write files, transmit data over network sockets, or process data from various sources such as HTTP requests or databases.
 
-## What are the different type of streams?
+## What are the different types of streams?
 
 1. **Readable Streams:** Readable streams allow you to read data from a source, such as a file or an HTTP request. They emit events like "data" when new data is available and "end" when there is no more data to be read.
 
@@ -727,7 +734,7 @@ In this example, we create a readable stream using `fs.createReadStream()` to re
 
 4. **Transform Streams:** Transform streams are a special type of duplex stream that can modify or transform the data as it flows through the stream. You can think of them as a combination of readable and writable streams with an intermediate processing step. They are commonly used for tasks like data compression, encryption, or parsing.
 
-## How do you create a readable stream in node?
+## How do you create a readable stream in Node.js?
 
 In Node.js, you can create a readable stream by using the `Readable` class from the built-in `stream` module. Here's an example of how to create a readable stream:
 
@@ -777,7 +784,7 @@ You can replace the logic inside `_read` with your own data source, such as read
 
 How do you create a writable stream in node
 
-## How do you create a writable stream in node?
+## How do you create a writable stream in Node.js?
 
 ```javascript
 const { Writable } = require('stream');
@@ -831,7 +838,7 @@ writableStream.on('finish', () => {
 });
 ```
 
-## How can you pipe data from a readable stream to a writable stream in node?
+## How can you pipe data from a readable stream to a writable stream in Node.js?
 
 In Node.js, you can pipe data from a readable stream to a writable stream using the `pipe()` method. The `pipe()` method allows you to easily consume data from a readable stream and write it directly to a writable stream without manually handling the data chunks.
 
@@ -955,7 +962,7 @@ readableStream.pipe(writableStream);
 
 If an error occurs during the reading or writing process, the respective error event handler will be triggered, allowing you to handle the error appropriately.
 
-## How to transform data using Transform stream?
+## How do you transform data using Transform stream?
 
 Transform streams in Node.js allow you to transform data as it passes through the stream. You can modify, filter, or manipulate the data in some way before it is passed on to the next stream or written to a destination. To transform data using Transform streams, you typically extend the `Transform` class from the `stream` module. Here's an example:
 
@@ -994,7 +1001,7 @@ To use the custom transform stream, we create an instance of `UpperCaseTransform
 
 As the data flows through the transform stream, each chunk will be transformed according to the logic defined in the `_transform` method before being passed to the next stream.
 
-## How to handle backpressure in node.js streams?
+## How do you handle backpressure in Node.js streams?
 
 Backpressure is a mechanism used in Node.js streams to handle data transfer when the receiving end is slower or unable to keep up with the data flow from the source. It prevents a buildup of data in the buffer by pausing the data transfer until the consumer is ready to process more data.
 
@@ -1023,7 +1030,7 @@ When the writable stream's buffer is full, the readable stream will pause sendin
 
 By using the `.pipe()` method and allowing the streams to handle backpressure, you ensure a smooth flow of data from the source to the destination, preventing memory exhaustion and optimizing the data transfer process.
 
-## How to chain multiple streams together?
+## How do you chain multiple streams together?
 
 In Node.js, you can chain multiple streams together using the `pipe()` or `pipeline()` method.
 Here's an example that demonstrates chaining 4 to 5 streams together where we'll read data from a file, split it into lines, transform each line, filter out specific lines, and finally write the result to another file:
@@ -1142,7 +1149,7 @@ Node.js provides several built-in modules for working with streams. Here are the
 
 These are some of the main built-in stream modules provided by Node.js. Each module offers specific functionality and features for working with different types of streams in various contexts.
 
-## How to handle end-of-stream events in Node.js?
+## How do you handle end-of-stream events in Node.js?
 
 To handle end-of-stream events in Node.js:
 
@@ -1150,7 +1157,7 @@ To handle end-of-stream events in Node.js:
 - **Writable Stream:** Use the `finish` event to know when all data has been written.
 - **Duplex/Transform Stream:** Use the `end` event or check for `null` return value when reading from the stream.
 
-## How to handle large files using streams?
+## How do you handle large files using streams?
 
 In Node.js, streams are designed to work in a non-blocking manner by default. When you use streams to handle large files, the data is processed incrementally as it becomes available, without blocking the execution of other parts of your code. This allows for efficient handling of large files without causing delays or consuming excessive memory.
 
@@ -1215,7 +1222,7 @@ const writableStream = fs.createWriteStream('output.txt', 'utf8');
 readableStream.pipe(writableStream);
 ```
 
-## How to consume and produce streams in an HTTP server in Node.js?
+## How do you consume and produce streams in an HTTP server in Node.js?
 
 In Node.js, you can consume and produce streams in an HTTP server by leveraging the `request` and `response` objects provided by the `http` module.
 
@@ -1255,7 +1262,7 @@ server.listen(3000, () => {
 
 In this HTTP server example, we handle incoming `requests` incrementally using the `data` event and concatenate the chunks into a `requestBody`. After processing the request body, we create a readable stream from a large file and set appropriate response headers. By using `readableStream.pipe(response)`, we efficiently send the stream's data as the response without buffering the entire file. This example can be customized for specific requirements, such as additional request body processing or response stream transformations.
 
-## How to create a duplex stream in Node.js?
+## How do you create a duplex stream in Node.js?
 
 In Node.js, you can create a duplex stream by using the `Duplex` class from the `stream` module. A duplex stream is a stream that can both read from and write to. Here's an example of how you can create a duplex stream:
 
@@ -1306,7 +1313,7 @@ myStream.end(); // Signal the end of writing
 // Read:  World!
 ```
 
-## What are the example of built-in Duplex streams in node?
+## What are examples of built-in Duplex streams in node?
 
 Node.js provides several built-in duplex streams that you can use out of the box. One such example is the `net.Socket` class, which represents a TCP socket. The `net.Socket` class is a duplex stream that allows reading from and writing to a TCP socket. Here's an example:
 
