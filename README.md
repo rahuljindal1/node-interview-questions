@@ -2,28 +2,29 @@
 
 ## Table of Contents
 
-1. **Event-Emitters**
-| No. | Questions                                                                                                                                                                                                                        |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |                                                                                               |
-| 1   | [What are Event Emitters?](#what-are-event-emitters)                                                                                                                                                                             |
-| 2   | [How to pass data with event emitters in Node.js?](#how-to-pass-data-with-event-emitters-in-nodejs)                                                                                                                             |
-| 3   | [How to handle errors with event emitters in Node.js?](#how-to-handle-errors-with-event-emitters-in-nodejs)                                                                                                                   |
-| 4   | [What is the role of error events in EventEmitter?](#what-is-the-role-of-error-events-in-eventemitter)                                                                                                                         |
-| 5   | [How to handle multiple event listeners in Node.js?](#how-to-handle-multiple-event-listeners-in-nodejs)                                                                                                                       |
-| 6   | [How to remove event listeners in Node.js?](#how-to-remove-event-listeners-in-nodejs)                                                                                                                                           |
-| 7   | [What is the difference between `removeListener` and `removeAllListeners` in event emitters?](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters)                                           |
-| 8   | [What is the difference between `on` and `once` methods in event emitters?](#what-is-the-difference-between-on-and-once-methods-in-event-emitters)                                                                               |
-| 9   | [How can you implement custom event emitters in Node.js?](#how-can-you-implement-custom-event-emitters-in-nodejs)                                                                                                               |
-| 10  | [What are the core features of EventEmitter?](#what-are-the-core-features-of-eventemitter)                                                                                                                                     |
-| 11  | [Explain the concept of event propagation in event emitters?](#explain-the-concept-of-event-propagation-in-event-emitters)                                                                                                     |
-| 12  | [An example of using EventEmitter in a real-world scenario?](#an-example-of-using-eventemitter-in-a-real-world-scenario)                                                                                                       |
-| 13  | [What kind of applications can be created using the event system?](#what-kind-of-applications-can-be-created-using-event-system)                                                                                               |
-| 14  | [What are memory leaks in event emitters and how to prevent them?](#what-are-memory-leaks-in-event-emitters-and-how-to-prevent-them)                                                                                           |
-| 15  | [Explain the difference between EventEmitter and streams in Node.js?](#explain-the-difference-between-eventemitter-and-streams-in-nodejs)                                                                                       |
-| 16  | [What are the limitations or performance considerations when using EventEmitter?](#what-are-the-limitations-or-performance-considerations-when-using-eventemitter)                                                             |
-| 17  | [What is event batching?](#what-is-event-batching)                                                                                                                                                                               |
-| 18  | [What is the maximum number of listeners that can be attached to a single event emitter instance?](#what-is-the-maximum-number-of-listeners-that-can-be-attached-on-a-single-event-emitter-instance)                         |
-| 19  | [How event emitters are different from Pub/Sub queues like SQS (Amazon Simple Queue Service)?](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-)                                         |
+### Event-Emitters
+
+| No. | Questions         |
+| --- | ----------------- |
+| 1   | [What are Event Emitters?](#what-are-event-emitters) |
+| 2   | [How to pass data with event emitters in Node.js?](#how-to-pass-data-with-event-emitters-in-nodejs) |
+| 3   | [How to handle errors with event emitters in Node.js?](#how-to-handle-errors-with-event-emitters-in-nodejs) |
+| 4   | [What is the role of error events in EventEmitter?](#what-is-the-role-of-error-events-in-eventemitter) |
+| 5   | [How to handle multiple event listeners in Node.js?](#how-to-handle-multiple-event-listeners-in-nodejs) |
+| 6   | [How to remove event listeners in Node.js?](#how-to-remove-event-listeners-in-nodejs) |
+| 7   | [What is the difference between `removeListener` and `removeAllListeners` in event emitters?](#what-is-the-difference-between-removelistener-and-removealllisteners-in-event-emitters) |
+| 8   | [What is the difference between `on` and `once` methods in event emitters?](#what-is-the-difference-between-on-and-once-methods-in-event-emitters) |
+| 9   | [How can you implement custom event emitters in Node.js?](#how-can-you-implement-custom-event-emitters-in-nodejs) |
+| 10  | [What are the core features of EventEmitter?](#what-are-the-core-features-of-eventemitter) |
+| 11  | [Explain the concept of event propagation in event emitters?](#explain-the-concept-of-event-propagation-in-event-emitters) |
+| 12  | [An example of using EventEmitter in a real-world scenario?](#an-example-of-using-eventemitter-in-a-real-world-scenario) |
+| 13  | [What kind of applications can be created using the event system?](#what-kind-of-applications-can-be-created-using-event-system) |
+| 14  | [What are memory leaks in event emitters and how to prevent them?](#what-are-memory-leaks-in-event-emitters-and-how-to-prevent-them) |
+| 15  | [Explain the difference between EventEmitter and streams in Node.js?](#explain-the-difference-between-eventemitter-and-streams-in-nodejs) |
+| 16  | [What are the limitations or performance considerations when using EventEmitter?](#what-are-the-limitations-or-performance-considerations-when-using-eventemitter) |
+| 17  | [What is event batching?](#what-is-event-batching) |
+| 18  | [What is the maximum number of listeners that can be attached to a single event emitter instance?](#what-is-the-maximum-number-of-listeners-that-can-be-attached-on-a-single-event-emitter-instance) |
+| 19  | [How event emitters are different from Pub/Sub queues like SQS (Amazon Simple Queue Service)?](#how-event-emitters-are-different-from-pubsub-ques-like-sqs--amazon-simple-queue-service-) |
 
 1. **Streams**
    1. [What are streams in Node.js](#what-are-streams-in-nodejs)
