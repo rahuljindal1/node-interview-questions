@@ -1688,3 +1688,7 @@ if (isMainThread) {
 - Ordering and visibility guarantees ensure synchronized access and modification of shared data.
 
 - Atomic operations prevent race conditions and data corruption in concurrent environments.
+
+## Disclaimer
+
+Please note that the interview questions provided in the repository are for educational purposes and may not represent the exact questions you'll encounter in job interviews. It is always recommended to consult additional resources and gain hands-on experience with these concepts.
