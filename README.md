@@ -1708,3 +1708,8 @@ if (isMainThread) {
 3. **Increased Memory Consumption:** Higher memory usage due to separate thread contexts and stacks.
 
 4. **Concurrency Management:** Need for careful management of shared resources and race conditions
+
+## Disclaimer
+
+Please note that the interview questions provided in the repository are for educational purposes and may not represent the exact questions you'll encounter in job interviews. It is always recommended to consult additional resources and gain hands-on experience with these concepts.
+
